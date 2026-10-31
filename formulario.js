@@ -18,7 +18,7 @@
     if (i === 1 && !form.name.value.trim()) return err("Escribe tu nombre."), false;
     if (i === 2) {
       if (!form.querySelector("input[name=punto]:checked")) return err("Elige una opción."), false;
-      if (!form.consentimiento.checked) return err("Marca la casilla para poder enviarte la guía."), false;
+      if (!form.consentimiento.checked) return err("Marca la casilla para poder enviarte " + (R.que || "la guía") + "."), false;
     }
     err(""); return true;
   }
@@ -45,14 +45,14 @@
       var h = document.getElementById("hello");
       h.textContent = "Hecho, ";
       var b = document.createElement("b"); b.textContent = form.name.value.trim().split(" ")[0]; h.appendChild(b);
-      h.appendChild(document.createTextNode(". Revisa tu correo, que ya te ha llegado la guía."));
+      h.appendChild(document.createTextNode(R.hecho || ". Revisa tu correo, que ya te ha llegado la guía."));
       modal.classList.remove("on"); document.body.classList.add("done"); window.scrollTo(0, 0);
       btn.disabled = false;
     });
   });
 
   var copy = document.querySelector(".copy"), msg = document.getElementById("copied");
-  copy.addEventListener("click", function () {
+  if (copy) copy.addEventListener("click", function () {
     function ok() { msg.textContent = "Copiadas. Pégalas en un chat nuevo de ChatGPT o Claude."; }
     if (navigator.clipboard) navigator.clipboard.writeText(R.prompt).then(ok, fallback); else fallback();
     function fallback() {

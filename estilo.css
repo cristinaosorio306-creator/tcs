@@ -104,3 +104,9 @@ button.ic { border: 0; cursor: pointer; }
 .ep .go { margin-top: auto; font-size: 14px; font-weight: 600; color: var(--muted); }
 .ep:hover .go { color: var(--ink); }
 .ic.dl { text-decoration: none; }
+
+/* Móvil: título algo más pequeño y sin el punto suelto del antetítulo */
+@media (max-width: 480px) {
+  h1 { font-size: 34px; }
+  .eyebrow i { display: none; }
+}

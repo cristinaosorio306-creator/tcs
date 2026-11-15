@@ -14,11 +14,12 @@
   }
   function err(msg) { steps[i].querySelector(".err").textContent = msg || ""; }
   function valid() {
-    if (i === 0 && !/^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(form.email.value.trim())) return err("Revisa el email, parece que falta algo."), false;
+    if (i === 0 && !/^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(form.email.value.trim())) return err("Revisa el correo, parece que falta algo."), false;
     if (i === 1 && !form.name.value.trim()) return err("Escribe tu nombre."), false;
     if (i === 2) {
       if (!form.querySelector("input[name=punto]:checked")) return err("Elige una opción."), false;
-      if (!form.consentimiento.checked) return err("Marca la casilla para poder enviarte " + (R.que || "la guía") + "."), false;
+      if (R.area === "serie" && !form.herramientas.checked) return err("Marca la primera casilla para recibir la serie en tu correo."), false;
+      if (!form.privacidad.checked) return err("Marca la casilla de la política de privacidad."), false;
     }
     err(""); return true;
   }
@@ -42,13 +43,14 @@
     data.set("fields[enlace_regalo]", pdf ? pdf.href : "");
     data.set("fields[punto]", form.querySelector("input[name=punto]:checked").value);
     data.set("ml-submit", "1"); data.set("anticsrf", "true");
-    var send = C.action ? fetch(C.action, { method: "POST", mode: "no-cors", body: data }).catch(function () {}) : Promise.resolve();
+    var quiere = form.herramientas.checked;
+    var send = C.action && quiere ? fetch(C.action, { method: "POST", mode: "no-cors", body: data }).catch(function () {}) : Promise.resolve();
     if (!C.action) console.warn("Borrador: el formulario no está conectado, este contacto no se ha guardado.");
     send.then(function () {
       var h = document.getElementById("hello");
       h.textContent = "Hecho, ";
       var b = document.createElement("b"); b.textContent = form.name.value.trim().split(" ")[0]; h.appendChild(b);
-      h.appendChild(document.createTextNode(R.hecho || ". Revisa tu correo, que ya te ha llegado la guía."));
+      h.appendChild(document.createTextNode(R.area === "serie" ? ". Revisa tu correo: te acaba de llegar el episodio 1." : quiere ? ". Aquí tienes tu regalo, y te escribiré con más herramientas útiles." : ". Aquí tienes tu regalo."));
       modal.classList.remove("on"); document.body.classList.add("done"); window.scrollTo(0, 0);
       btn.disabled = false;
     });

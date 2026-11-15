@@ -35,10 +35,13 @@
     e.preventDefault();
     if (!valid()) return;
     var btn = form.querySelector("[type=submit]"); btn.disabled = true;
-    var data = new URLSearchParams(new FormData(form));
-    data.set("regalo", R.regalo); data.set("area", R.area);
-    var p = new URLSearchParams(location.search);
-    ["utm_source", "utm_medium", "utm_campaign", "utm_content"].forEach(function (k) { if (p.get(k)) data.set(k, p.get(k)); });
+    var pdf = document.querySelector('a[href$=".pdf"]'), data = new URLSearchParams();
+    data.set("fields[email]", form.email.value.trim());
+    data.set("fields[name]", form.name.value.trim());
+    data.set("fields[regalo]", R.regalo);
+    data.set("fields[enlace_regalo]", pdf ? pdf.href : "");
+    data.set("fields[punto]", form.querySelector("input[name=punto]:checked").value);
+    data.set("ml-submit", "1"); data.set("anticsrf", "true");
     var send = C.action ? fetch(C.action, { method: "POST", mode: "no-cors", body: data }).catch(function () {}) : Promise.resolve();
     if (!C.action) console.warn("Borrador: el formulario no está conectado, este contacto no se ha guardado.");
     send.then(function () {

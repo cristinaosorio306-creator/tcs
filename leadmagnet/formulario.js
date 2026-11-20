@@ -42,9 +42,11 @@
     data.set("fields[regalo]", R.regalo);
     data.set("fields[enlace_regalo]", pdf ? pdf.href : "");
     data.set("fields[punto]", form.querySelector("input[name=punto]:checked").value);
-    data.set("ml-submit", "1"); data.set("anticsrf", "true");
     var quiere = form.herramientas.checked;
-    var send = C.action && quiere ? fetch(C.action, { method: "POST", mode: "no-cors", body: data }).catch(function () {}) : Promise.resolve();
+    data.set("fields[herramientas]", quiere ? "si" : "no");
+    data.set("ml-submit", "1"); data.set("anticsrf", "true");
+    /* Se guarda a todo el mundo; en MailerLite solo entra en la bienvenida y el curso quien tiene herramientas = si. */
+    var send = C.action ? fetch(C.action, { method: "POST", mode: "no-cors", body: data }).catch(function () {}) : Promise.resolve();
     if (!C.action) console.warn("Borrador: el formulario no está conectado, este contacto no se ha guardado.");
     send.then(function () {
       var h = document.getElementById("hello");
